@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python智能体开发教材 - 在线编程环境</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2E86C1, #3498DB);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: flex;
+            min-height: 600px;
+        }
+
+        .theory-panel {
+            flex: 1;
+            padding: 30px;
+            background: #f8f9fa;
+            border-right: 2px solid #e9ecef;
+            overflow-y: auto;
+        }
+
+        .coding-panel {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .exercise-title {
+            font-size: 1.5em;
+            color: #2c3e50;
+        }
+
+        .difficulty-badge {
+            padding: 5px 15px;
+            background: #27ae60;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .code-editor {
+            flex: 1;
+            margin-bottom: 20px;
+        }
+
+        .code-editor textarea {
+            width: 100%;
+            height: 100%;
+            min-height: 300px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: #2d3748;
+            color: #e2e8f0;
+            resize: vertical;
+        }
+
+        .control-panel {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-run {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-run:hover {
+            background: #229954;
+        }
+
+        .btn-submit {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background: #2980b9;
+        }
+
+        .btn-hint {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-hint:hover {
+            background: #e67e22;
+        }
+
+        .output-panel {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .output-panel h4 {
+            color: #4fd1c7;
+            margin-bottom: 10px;
+        }
+
+        .output-panel pre {
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .feedback-panel {
+            background: #e8f5e8;
+            border: 1px solid #27ae60;
+            border-radius: 8px;
+            padding: 15px;
+            display: none;
+        }
+
+        .feedback-panel.show {
+            display: block;
+        }
+
+        .feedback-panel h4 {
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: #ecf0f1;
+            height: 8px;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .theory-content h3 {
+            color: #2c3e50;
+            margin: 20px 0 10px 0;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+
+        .theory-content p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #34495e;
+        }
+
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-indicators {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐍 Python智能体开发教材</h1>
+            <p>交互式学习环境 - 第1章：Python环境搭建与基础语法</p>
+        </div>
+
+        <div class="main-content">
+            <!-- 理论学习面板 -->
+            <div class="theory-panel">
+                <div class="theory-content">
+                    <h3>📚 本节重点</h3>
+                    <p>在这个练习中，你将学习如何使用Python的基本数据类型和变量操作。重点掌握：</p>
+                    <ul style="margin-left: 20px; line-height: 1.8;">
+                        <li><span class="highlight">变量赋值</span>和命名规范</li>
+                        <li><span class="highlight">数据类型</span>：字符串、整数、浮点数</li>
+                        <li><span class="highlight">格式化输出</span>：f-string的使用</li>
+                        <li><span class="highlight">用户输入</span>：input()函数的应用</li>
+                    </ul>
+
+                    <h3>💡 代码示例</h3>
+                    <div class="code-example">
+# 基本变量操作示例
+name = "张三"          # 字符串类型
+age = 20              # 整数类型
+height = 175.5        # 浮点数类型
+
+# 格式化输出
+print(f"姓名：{name}")
+print(f"年龄：{age}岁")
+print(f"身高：{height}cm")
+
+# 用户输入
+user_name = input("请输入您的姓名：")
+print(f"您好，{user_name}！")
+                    </div>
+
+                    <h3>🎯 练习目标</h3>
+                    <p>完成右侧的代码，实现一个简单的个人信息收集程序，要求：</p>
+                    <ol style="margin-left: 20px; line-height: 1.8;">
+                        <li>收集用户的姓名、年龄、专业、爱好</li>
+                        <li>使用合适的数据类型存储信息</li>
+                        <li>格式化输出个人信息卡片</li>
+                        <li>代码要有适当的注释</li>
+                    </ol>
+
+                    <h3>💡 提示</h3>
+                    <p>📌 使用<code>input()</code>函数获取用户输入<br>
+                    📌 使用<code>int()</code>将字符串转换为整数<br>
+                    📌 使用f-string进行格式化输出<br>
+                    📌 注意变量的命名要规范（使用下划线分隔）</p>
+                </div>
+            </div>
+
+            <!-- 编程实践面板 -->
+            <div class="coding-panel">
+                <div class="exercise-header">
+                    <h3 class="exercise-title">🧪 练习1：个人信息管理</h3>
+                    <div class="difficulty-badge">基础</div>
+                </div>
+
+                <div class="status-indicators">
+                    <div class="status-item status-warning" id="status-syntax">
+                        <span>⚪</span> 语法检查
+                    </div>
+                    <div class="status-item status-warning" id="status-run">
+                        <span>⚪</span> 运行测试
+                    </div>
+                    <div class="status-item status-warning" id="status-complete">
+                        <span>⚪</span> 完成度检查
+                    </div>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress"></div>
+                </div>
+
+                <div class="code-editor">
+                    <textarea id="code-input" placeholder="在这里编写您的Python代码...">
+# 个人信息管理程序
+# TODO: 完善以下代码
+
+# 收集用户信息
+name = input("请输入您的姓名：")
+age = int(input("请输入您的年龄："))
+# TODO: 添加专业和爱好的输入
+
+# 输出个人信息
+print(f"您好，{name}！")
+# TODO: 输出完整的个人信息卡片
+
+# 提示：使用格式化输出，让信息显示更美观
+</textarea>
+                </div>
+
+                <div class="control-panel">
+                    <button class="btn btn-run" onclick="runCode()">
+                        <span id="run-text">▶️ 运行代码</span>
+                    </button>
+                    <button class="btn btn-submit" onclick="submitCode()">
+                        📤 提交答案
+                    </button>
+                    <button class="btn btn-hint" onclick="getHint()">
+                        💡 获取提示
+                    </button>
+                </div>
+
+                <div class="output-panel">
+                    <h4>📋 输出结果：</h4>
+                    <pre id="output">点击"运行代码"查看结果...</pre>
+                </div>
+
+                <div class="feedback-panel" id="feedback">
+                    <h4>🤖 AI反馈：</h4>
+                    <div id="ai-feedback"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentProgress = 0;
+        let hintCount = 0;
+
+        function updateProgress(percent) {
+            currentProgress = percent;
+            document.getElementById('progress').style.width = percent + '%';
+        }
+
+        function updateStatus(type, status) {
+            const statusMap = {
+                'success': { class: 'status-success', icon: '✅' },
+                'warning': { class: 'status-warning', icon: '⚠️' },
+                'error': { class: 'status-error', icon: '❌' }
+            };
+
+            const element = document.getElementById(`status-${type}`);
+            element.className = `status-item ${statusMap[status].class}`;
+            element.querySelector('span').textContent = statusMap[status].icon;
+        }
+
+        function runCode() {
+            const runButton = document.querySelector('.btn-run');
+            const runText = document.getElementById('run-text');
+            const code = document.getElementById('code-input').value;
+            const output = document.getElementById('output');
+
+            // 显示加载状态
+            runText.innerHTML = '<span class="loading"></span> 运行中...';
+            runButton.disabled = true;
+
+            // 模拟代码运行
+            setTimeout(() => {
+                try {
+                    // 简单的语法检查
+                    if (code.includes('input(') && code.includes('print(') && code.includes('f"')) {
+                        updateStatus('syntax', 'success');
+                        updateStatus('run', 'success');
+                        updateProgress(60);
+
+                        // 模拟输出结果
+                        output.textContent = `请输入您的姓名：张三
+请输入您的年龄：20
+请输入您的专业：计算机科学
+请输入您的爱好：编程
+
+=== 个人信息卡片 ===
+姓名：张三
+年龄：20岁
+专业：计算机科学
+爱好：编程
+
+程序运行成功！✨`;
+
+                        // 检查完成度
+                        if (code.includes('专业') && code.includes('爱好') && code.includes('=== 个人信息卡片 ===')) {
+                            updateStatus('complete', 'success');
+                            updateProgress(100);
+                        } else {
+                            updateStatus('complete', 'warning');
+                            updateProgress(80);
+                        }
+                    } else {
+                        updateStatus('syntax', 'error');
+                        updateStatus('run', 'error');
+                        output.textContent = '代码语法错误，请检查：\n- 是否使用了 input() 函数？\n- 是否使用了 print() 函数？\n- 是否使用了 f-string 格式化？';
+                    }
+                } catch (error) {
+                    output.textContent = '运行出错：' + error.message;
+                    updateStatus('run', 'error');
+                }
+
+                // 恢复按钮状态
+                runText.textContent = '▶️ 运行代码';
+                runButton.disabled = false;
+            }, 1500);
+        }
+
+        function submitCode() {
+            const code = document.getElementById('code-input').value;
+            const feedback = document.getElementById('feedback');
+            const aiFeedback = document.getElementById('ai-feedback');
+
+            // 显示反馈面板
+            feedback.classList.add('show');
+
+            // 模拟AI评估
+            let score = 0;
+            let feedbackHtml = '<div style="margin-bottom: 15px;"><strong>📊 评估结果：</strong></div>';
+
+            // 检查各项要求
+            const checks = [
+                { condition: code.includes('input('), points: 20, desc: '正确使用input()函数收集用户输入' },
+                { condition: code.includes('int('), points: 15, desc: '正确使用int()转换数据类型' },
+                { condition: code.includes('f"') || code.includes("f'"), points: 20, desc: '使用f-string进行格式化输出' },
+                { condition: code.includes('专业') && code.includes('爱好'), points: 25, desc: '收集了完整的个人信息（专业、爱好）' },
+                { condition: code.includes('===') || code.includes('---'), points: 10, desc: '输出格式美观，有分隔线' },
+                { condition: code.split('#').length > 3, points: 10, desc: '代码有适当的注释' }
+            ];
+
+            checks.forEach(check => {
+                if (check.condition) {
+                    score += check.points;
+                    feedbackHtml += `<div style="color: #27ae60; margin: 5px 0;">✅ ${check.desc} (+${check.points}分)</div>`;
+                } else {
+                    feedbackHtml += `<div style="color: #e74c3c; margin: 5px 0;">❌ ${check.desc} (0分)</div>`;
+                }
+            });
+
+            feedbackHtml += `<div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+                <strong>总分：${score}/100</strong><br>
+                <strong>等级：${getGrade(score)}</strong>
+            </div>`;
+
+            // 添加改进建议
+            if (score < 100) {
+                feedbackHtml += `<div style="margin-top: 15px;">
+                    <strong>💡 改进建议：</strong><br>
+                    ${getImprovementSuggestions(code)}
+                </div>`;
+            } else {
+                feedbackHtml += `<div style="margin-top: 15px; color: #27ae60;">
+                    <strong>🎉 太棒了！你已经完美完成了这个练习！</strong>
+                </div>`;
+            }
+
+            aiFeedback.innerHTML = feedbackHtml;
+        }
+
+        function getGrade(score) {
+            if (score >= 90) return '优秀 ⭐⭐⭐⭐⭐';
+            if (score >= 80) return '良好 ⭐⭐⭐⭐';
+            if (score >= 70) return '及格 ⭐⭐⭐';
+            if (score >= 60) return '合格 ⭐⭐';
+            return '需要改进 ⭐';
+        }
+
+        function getImprovementSuggestions(code) {
+            const suggestions = [];
+            
+            if (!code.includes('专业')) {
+                suggestions.push('添加专业信息的收集');
+            }
+            if (!code.includes('爱好')) {
+                suggestions.push('添加爱好信息的收集');
+            }
+            if (!code.includes('===') && !code.includes('---')) {
+                suggestions.push('使用分隔线让输出更美观');
+            }
+            if (code.split('#').length <= 3) {
+                suggestions.push('增加代码注释，提高可读性');
+            }
+            if (!code.includes('int(')) {
+                suggestions.push('使用int()函数转换年龄为整数类型');
+            }
+
+            return suggestions.length > 0 ? 
+                suggestions.map(s => `• ${s}`).join('<br>') : 
+                '代码已经很不错了！';
+        }
+
+        function getHint() {
+            hintCount++;
+            const hints = [
+                '💡 提示1: 使用 input("提示文字") 来收集用户输入，记得为每个信息项都添加清晰的提示。',
+                '💡 提示2: 年龄需要转换为整数类型，使用 int(input("请输入年龄：")) 的方式。',
+                '💡 提示3: 使用 f"字符串{变量名}" 的方式进行格式化输出，这样可以在字符串中嵌入变量。',
+                '💡 提示4: 可以使用 === 或 --- 作为分隔线，让输出的个人信息卡片更美观。',
+                '💡 提示5: 记得在代码中添加注释（# 注释内容），解释每段代码的作用。'
+            ];
+
+            if (hintCount <= hints.length) {
+                alert(hints[hintCount - 1]);
+            } else {
+                alert('💡 你已经获取了所有提示！现在试着独立完成练习吧。如果还有问题，可以查看左侧的理论内容。');
+            }
+        }
+
+        // 代码自动保存功能
+        document.getElementById('code-input').addEventListener('input', function() {
+            localStorage.setItem('python-code-ch1-ex1', this.value);
+        });
+
+        // 页面加载时恢复代码
+        window.addEventListener('load', function() {
+            const savedCode = localStorage.getItem('python-code-ch1-ex1');
+            if (savedCode) {
+                document.getElementById('code-input').value = savedCode;
+            }
+        });
+    </script>
+</body>
+</html> 
