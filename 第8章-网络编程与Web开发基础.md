@@ -4142,7 +4142,7 @@ class VersionedBlogAPI:
             self._v1_get_post, 
             v1,
             deprecated=True,  # v1已废弃
-            sunset_date="2024-12-31"
+            sunset_date="2025-12-31"
         )
     
     def _register_v2_endpoints(self):
@@ -4249,7 +4249,7 @@ class VersionedBlogAPI:
                         'author': '张三',
                         'category': 'Python教程',
                         'tags': ['编程', '教程'],
-                        'created_at': '2024-01-30T10:00:00Z'
+                        'created_at': '2025-01-30T10:00:00Z'
                     },
                     {
                         'id': '2', 
@@ -4257,7 +4257,7 @@ class VersionedBlogAPI:
                         'author': '李四',
                         'category': 'Web开发',
                         'tags': ['前端', 'React'],
-                        'created_at': '2024-01-30T11:00:00Z'
+                        'created_at': '2025-01-30T11:00:00Z'
                     }
                 ],
                 'total': 2,
@@ -4277,8 +4277,8 @@ class VersionedBlogAPI:
                 'author': '张三',
                 'category': 'Python教程',
                 'tags': ['编程', '教程', 'Python'],
-                'created_at': '2024-01-30T10:00:00Z',
-                'updated_at': '2024-01-30T10:30:00Z',
+                'created_at': '2025-01-30T10:00:00Z',
+                'updated_at': '2025-01-30T10:30:00Z',
                 'view_count': 156,
                 'like_count': 23
             }

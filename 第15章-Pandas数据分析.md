@@ -737,10 +737,10 @@ api_response_data = '''
 {
     "status": "success",
     "data": [
-        {"date": "2024-01-01", "temperature": 15.2, "humidity": 65},
-        {"date": "2024-01-02", "temperature": 18.5, "humidity": 70},
-        {"date": "2024-01-03", "temperature": 12.8, "humidity": 80},
-        {"date": "2024-01-04", "temperature": 20.1, "humidity": 55}
+        {"date": "2025-01-01", "temperature": 15.2, "humidity": 65},
+        {"date": "2025-01-02", "temperature": 18.5, "humidity": 70},
+        {"date": "2025-01-03", "temperature": 12.8, "humidity": 80},
+        {"date": "2025-01-04", "temperature": 20.1, "humidity": 55}
     ]
 }
 '''
@@ -1406,7 +1406,7 @@ outliers = [50000, -5000, 80000, 100000]
 all_sales = np.concatenate([normal_sales, outliers])
 
 sales_data = {
-    '日期': pd.date_range('2024-01-01', periods=len(all_sales), freq='D'),
+    '日期': pd.date_range('2025-01-01', periods=len(all_sales), freq='D'),
     '销售额': all_sales,
     '销售员': [f'员工{i%10+1}' for i in range(len(all_sales))]
 }
