@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python智能体开发教学平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #4a5568;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #667eea;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            min-height: calc(100vh - 100px);
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+        }
+
+        .sidebar h3 {
+            color: #4a5568;
+            margin-bottom: 1rem;
+            font-size: 1.1em;
+        }
+
+        .chapter-list {
+            list-style: none;
+        }
+
+        .chapter-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .chapter-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #4a5568;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+
+        .chapter-link:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .chapter-link.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .content-area {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .tab-container {
+            display: flex;
+            background: #f7fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tab-button {
+            padding: 1rem 2rem;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 1em;
+            color: #4a5568;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tab-button.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #667eea;
+        }
+
+        .tab-content {
+            padding: 2rem;
+            height: calc(100vh - 280px);
+            overflow-y: auto;
+        }
+
+        .lesson-content {
+            display: none;
+        }
+
+        .lesson-content.active {
+            display: block;
+        }
+
+        .code-playground {
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            height: 100%;
+        }
+
+        .code-playground.active {
+            display: grid;
+        }
+
+        .code-editor {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-header {
+            background: #2d3748;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.9em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-textarea {
+            flex: 1;
+            border: none;
+            padding: 1rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+            background: #1a202c;
+            color: #e2e8f0;
+        }
+
+        .output-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .output-content {
+            flex: 1;
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 1rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            overflow-y: auto;
+        }
+
+        .control-panel {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f7fafc;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-info {
+            background: #4299e1;
+            color: white;
+        }
+
+        .progress-bar {
+            background: #e2e8f0;
+            height: 4px;
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            background: #667eea;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .lesson-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .lesson-title {
+            color: #2d3748;
+            font-size: 2em;
+            margin-bottom: 0.5rem;
+        }
+
+        .lesson-meta {
+            color: #718096;
+            font-size: 0.9em;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section h3 {
+            color: #4a5568;
+            margin-bottom: 1rem;
+            padding-left: 1rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .code-example {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .exercise-card {
+            background: #f7fafc;
+            border-left: 4px solid #4299e1;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .exercise-title {
+            color: #2d3748;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .sidebar {
+                position: static;
+                order: 2;
+            }
+            
+            .code-playground.active {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">🐍 Python教学平台</div>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#home">首页</a></li>
+                    <li><a href="#courses">课程</a></li>
+                    <li><a href="#practice">练习</a></li>
+                    <li><a href="#progress">进度</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <h3>📚 第一册 - Python基础</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="course-progress"></div>
+            </div>
+            <ul class="chapter-list" id="chapter-list">
+                <!-- 章节列表将由JavaScript生成 -->
+            </ul>
+        </aside>
+
+        <main class="content-area">
+            <div class="tab-container">
+                <button class="tab-button active" onclick="switchTab('lesson')">📖 课程内容</button>
+                <button class="tab-button" onclick="switchTab('practice')">💻 代码实践</button>
+                <button class="tab-button" onclick="switchTab('exercise')">🏋️ 练习题</button>
+            </div>
+
+            <div class="tab-content">
+                <!-- 课程内容标签页 -->
+                <div id="lesson-tab" class="lesson-content active">
+                    <div class="lesson-header">
+                        <h1 class="lesson-title" id="lesson-title">欢迎来到Python智能体开发教学平台</h1>
+                        <div class="lesson-meta" id="lesson-meta">选择左侧章节开始学习</div>
+                    </div>
+                    <div id="lesson-body">
+                        <div class="section">
+                            <h3>🎯 平台特色</h3>
+                            <p>我们的教学平台为您提供了完整的Python学习体验：</p>
+                            <ul>
+                                <li>📚 <strong>丰富的课程内容</strong>：18章完整的Python基础到高级内容</li>
+                                <li>💻 <strong>在线代码编辑器</strong>：实时编写和运行Python代码</li>
+                                <li>🏋️ <strong>互动练习题</strong>：400+个代码示例和72道练习题</li>
+                                <li>🤖 <strong>AI智能辅导</strong>：实时代码分析和学习建议</li>
+                                <li>📊 <strong>学习进度跟踪</strong>：可视化显示您的学习进展</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="section">
+                            <h3>🚀 开始学习</h3>
+                            <p>点击左侧的章节开始您的Python学习之旅。每个章节包含：</p>
+                            <div class="exercise-card">
+                                <div class="exercise-title">📖 理论讲解</div>
+                                <p>深入浅出的概念解释和实际应用场景</p>
+                            </div>
+                            <div class="exercise-card">
+                                <div class="exercise-title">💡 代码示例</div>
+                                <p>可运行的完整代码示例，帮助理解概念</p>
+                            </div>
+                            <div class="exercise-card">
+                                <div class="exercise-title">🏋️ 实践练习</div>
+                                <p>分层次的练习题，从基础到挑战级别</p>
+                            </div>
+                            <div class="exercise-card">
+                                <div class="exercise-title">🎯 综合项目</div>
+                                <p>真实项目案例，提升实战能力</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 代码实践标签页 -->
+                <div id="practice-tab" class="code-playground">
+                    <div class="code-editor">
+                        <div class="editor-header">
+                            <span>📝 Python代码编辑器</span>
+                            <button class="btn btn-info" onclick="loadExample()">📋 加载示例</button>
+                        </div>
+                        <textarea class="code-textarea" id="code-input" placeholder="# 在这里输入您的Python代码
+print('Hello, Python!')
+">print('Hello, Python!')</textarea>
+                    </div>
+                    <div class="output-panel">
+                        <div class="editor-header">
+                            <span>📺 输出结果</span>
+                            <button class="btn btn-info" onclick="clearOutput()">🗑️ 清空</button>
+                        </div>
+                        <div class="output-content" id="output-content">点击"运行代码"按钮执行Python代码...</div>
+                    </div>
+                </div>
+
+                <!-- 练习题标签页 -->
+                <div id="exercise-tab" class="lesson-content">
+                    <h2>🏋️ 当前章节练习题</h2>
+                    <div id="exercise-content">
+                        <p>请先选择一个章节查看相关练习题。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-panel">
+                <button class="btn btn-primary" onclick="runCode()">▶️ 运行代码</button>
+                <button class="btn btn-success" onclick="submitCode()">📤 提交答案</button>
+                <button class="btn btn-info" onclick="getHint()">💡 获取提示</button>
+                <button class="btn btn-info" onclick="saveProgress()">💾 保存进度</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 课程数据
+        const courseData = {
+            chapters: [
+                {
+                    id: 1,
+                    title: "Python环境搭建与基础语法",
+                    duration: "4课时",
+                    examples: 5,
+                    exercises: 4
+                },
+                {
+                    id: 2,
+                    title: "变量数据类型与运算符",
+                    duration: "3课时",
+                    examples: 8,
+                    exercises: 6
+                },
+                {
+                    id: 3,
+                    title: "控制结构与函数定义",
+                    duration: "4课时",
+                    examples: 12,
+                    exercises: 5
+                },
+                {
+                    id: 4,
+                    title: "面向对象编程基础",
+                    duration: "5课时",
+                    examples: 10,
+                    exercises: 4
+                },
+                {
+                    id: 5,
+                    title: "继承与多态",
+                    duration: "4课时",
+                    examples: 15,
+                    exercises: 4
+                },
+                {
+                    id: 6,
+                    title: "异常处理与调试",
+                    duration: "3课时",
+                    examples: 12,
+                    exercises: 3
+                },
+                {
+                    id: 7,
+                    title: "面向对象编程高级特性",
+                    duration: "5课时",
+                    examples: 20,
+                    exercises: 4
+                },
+                {
+                    id: 8,
+                    title: "网络编程与Web开发基础",
+                    duration: "6课时",
+                    examples: 37,
+                    exercises: 5
+                },
+                {
+                    id: 9,
+                    title: "数据库编程与ORM",
+                    duration: "4课时",
+                    examples: 18,
+                    exercises: 4
+                },
+                {
+                    id: 10,
+                    title: "数据结构-列表与元组",
+                    duration: "3课时",
+                    examples: 15,
+                    exercises: 4
+                },
+                {
+                    id: 11,
+                    title: "数据结构-字典与集合",
+                    duration: "4课时",
+                    examples: 20,
+                    exercises: 4
+                },
+                {
+                    id: 12,
+                    title: "模块与包管理",
+                    duration: "4课时",
+                    examples: 25,
+                    exercises: 4
+                },
+                {
+                    id: 13,
+                    title: "文件操作与数据持久化",
+                    duration: "3课时",
+                    examples: 18,
+                    exercises: 4
+                },
+                {
+                    id: 14,
+                    title: "NumPy数组计算",
+                    duration: "4课时",
+                    examples: 20,
+                    exercises: 4
+                },
+                {
+                    id: 15,
+                    title: "Pandas数据分析",
+                    duration: "5课时",
+                    examples: 25,
+                    exercises: 4
+                },
+                {
+                    id: 16,
+                    title: "Flask Web开发基础",
+                    duration: "5课时",
+                    examples: 30,
+                    exercises: 4
+                },
+                {
+                    id: 17,
+                    title: "HTTP协议与网络编程",
+                    duration: "5课时",
+                    examples: 30,
+                    exercises: 5
+                },
+                {
+                    id: 18,
+                    title: "测试驱动开发与项目管理",
+                    duration: "4课时",
+                    examples: 25,
+                    exercises: 4
+                }
+            ]
+        };
+
+        let currentChapter = null;
+        let userProgress = JSON.parse(localStorage.getItem('pythonCourseProgress') || '{}');
+
+        // 初始化页面
+        function initializePage() {
+            generateChapterList();
+            updateProgressBar();
+        }
+
+        // 生成章节列表
+        function generateChapterList() {
+            const chapterList = document.getElementById('chapter-list');
+            chapterList.innerHTML = '';
+
+            courseData.chapters.forEach(chapter => {
+                const listItem = document.createElement('li');
+                listItem.className = 'chapter-item';
+                
+                const link = document.createElement('a');
+                link.href = '#';
+                link.className = 'chapter-link';
+                link.innerHTML = `
+                    <span>第${chapter.id}章</span>
+                    <div style="font-size: 0.8em; color: #718096; margin-top: 2px;">
+                        ${chapter.title}
+                    </div>
+                `;
+                link.onclick = (e) => {
+                    e.preventDefault();
+                    loadChapter(chapter.id);
+                };
+
+                listItem.appendChild(link);
+                chapterList.appendChild(listItem);
+            });
+        }
+
+        // 加载章节内容
+        function loadChapter(chapterId) {
+            currentChapter = chapterId;
+            const chapter = courseData.chapters.find(c => c.id === chapterId);
+            
+            // 更新活跃状态
+            document.querySelectorAll('.chapter-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelectorAll('.chapter-link')[chapterId - 1].classList.add('active');
+
+            // 更新课程内容
+            document.getElementById('lesson-title').textContent = `第${chapter.id}章：${chapter.title}`;
+            document.getElementById('lesson-meta').textContent = `学习时间：${chapter.duration} | 代码示例：${chapter.examples}个 | 练习题：${chapter.exercises}道`;
+
+            // 加载具体内容（这里可以从markdown文件或API获取）
+            loadChapterContent(chapterId);
+            loadChapterExercises(chapterId);
+        }
+
+        // 加载章节详细内容
+        function loadChapterContent(chapterId) {
+            // 这里应该从服务器或本地文件加载markdown内容
+            // 为演示目的，我们使用静态内容
+            const lessonBody = document.getElementById('lesson-body');
+            
+            if (chapterId === 1) {
+                lessonBody.innerHTML = `
+                    <div class="section">
+                        <h3>🎯 学习目标</h3>
+                        <p>完成本章学习后，学生将能够：</p>
+                        <ul>
+                            <li>在自己的电脑上成功安装Python 3.11环境</li>
+                            <li>配置VS Code开发环境</li>
+                            <li>能够编写并运行至少5个基础Python程序</li>
+                            <li>掌握变量、数据类型、基本运算等核心概念</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📝 核心概念</h3>
+                        <h4>1.1 Python简介</h4>
+                        <p>Python是一种解释型、面向对象、动态数据类型的高级程序设计语言。它的核心特点包括：</p>
+                        <ul>
+                            <li><strong>简单易学</strong>：语法接近自然语言，代码简洁明了</li>
+                            <li><strong>开源免费</strong>：完全开源，拥有活跃的社区支持</li>
+                            <li><strong>跨平台</strong>：支持Windows、macOS、Linux等系统</li>
+                            <li><strong>库丰富</strong>：拥有强大的标准库和第三方库生态</li>
+                        </ul>
+                        
+                        <h4>1.2 环境搭建</h4>
+                        <p>安装Python环境的步骤：</p>
+                        <ol>
+                            <li>访问Python官网下载最新版本</li>
+                            <li>运行安装程序（记得勾选"Add Python to PATH"）</li>
+                            <li>验证安装：打开命令行输入 <code>python --version</code></li>
+                            <li>安装VS Code并配置Python扩展</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>💡 代码示例</h3>
+                        <h4>示例1：Hello World程序</h4>
+                        <div class="code-example"># hello_world.py
+print("Hello, Python World!")
+print("欢迎来到AI时代的Python编程！")
+
+# 多行输出
+message = """
+欢迎学习Python！
+这是你的第一个程序。
+让我们开始这段精彩的编程之旅吧！
+"""
+print(message)</div>
+                        
+                        <h4>示例2：变量和数据类型</h4>
+                        <div class="code-example"># variables_and_types.py
+# 数字类型
+age = 20                    # 整数 (int)
+height = 175.5             # 浮点数 (float)
+complex_num = 3 + 4j       # 复数 (complex)
+
+# 字符串类型
+name = "张三"               # 字符串 (str)
+greeting = f"你好，{name}！"  # f-string格式化
+
+# 布尔类型
+is_student = True          # 布尔值 (bool)
+is_graduated = False
+
+# 输出所有变量
+print(f"姓名：{name}")
+print(f"年龄：{age}")
+print(f"身高：{height}cm")
+print(f"是否为学生：{is_student}")
+print(f"问候语：{greeting}")</div>
+                    </div>
+                `;
+            } else {
+                // 其他章节的内容
+                lessonBody.innerHTML = `
+                    <div class="section">
+                        <h3>📚 第${chapterId}章内容</h3>
+                        <p>本章节的详细内容正在加载中...</p>
+                        <p>请切换到"代码实践"标签页进行编程练习，或查看"练习题"标签页完成相关习题。</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 加载章节练习题
+        function loadChapterExercises(chapterId) {
+            const exerciseContent = document.getElementById('exercise-content');
+            
+            if (chapterId === 1) {
+                exerciseContent.innerHTML = `
+                    <div class="exercise-card">
+                        <div class="exercise-title">🏋️ 练习1：个人信息输出程序</div>
+                        <p><strong>难度：</strong>基础 ⭐</p>
+                        <p><strong>要求：</strong>编写一个程序，要求用户输入姓名、年龄和爱好，然后格式化输出个人信息。</p>
+                        <div class="code-example"># 参考代码框架
+name = input("请输入您的姓名：")
+age = input("请输入您的年龄：")
+hobby = input("请输入您的爱好：")
+
+# TODO: 使用f-string格式化输出
+print(f"个人信息卡")
+# 请完成剩余代码...</div>
+                        <p><strong>预期输出：</strong></p>
+                        <div class="code-example">个人信息卡
+==================
+姓名：张三
+年龄：20岁
+爱好：编程</div>
+                    </div>
+                    
+                    <div class="exercise-card">
+                        <div class="exercise-title">🏋️ 练习2：简单计算器</div>
+                        <p><strong>难度：</strong>基础 ⭐⭐</p>
+                        <p><strong>要求：</strong>编写一个简单的计算器程序，能够进行加减乘除运算。</p>
+                        <div class="code-example"># 计算器程序框架
+num1 = float(input("请输入第一个数字："))
+operator = input("请输入运算符（+, -, *, /）：")
+num2 = float(input("请输入第二个数字："))
+
+# TODO: 根据运算符进行相应计算
+# 提示：使用if-elif-else结构</div>
+                    </div>
+                    
+                    <div class="exercise-card">
+                        <div class="exercise-title">🏋️ 练习3：数据类型检测器</div>
+                        <p><strong>难度：</strong>中级 ⭐⭐⭐</p>
+                        <p><strong>要求：</strong>编写程序检测用户输入的数据类型，并给出相应的提示。</p>
+                        <div class="code-example"># 数据类型检测器
+user_input = input("请输入任意内容：")
+
+# TODO: 判断输入的数据类型
+# 提示：使用try-except和type()函数
+# 需要检测：整数、浮点数、字符串</div>
+                    </div>
+                    
+                    <div class="exercise-card">
+                        <div class="exercise-title">🏋️ 挑战练习：学生成绩管理系统（初版）</div>
+                        <p><strong>难度：</strong>挑战 ⭐⭐⭐⭐</p>
+                        <p><strong>要求：</strong>创建一个简单的学生成绩管理系统，能够添加学生信息并显示统计结果。</p>
+                        <div class="code-example"># 学生成绩管理系统初版
+print("=== 学生成绩管理系统 ===")
+
+# TODO: 实现以下功能
+# 1. 输入学生姓名和成绩
+# 2. 计算平均分
+# 3. 找出最高分和最低分
+# 4. 格式化输出所有信息
+
+# 提示：可以使用列表来存储多个学生的信息</div>
+                    </div>
+                `;
+            } else {
+                exerciseContent.innerHTML = `
+                    <div class="exercise-card">
+                        <div class="exercise-title">🏋️ 第${chapterId}章练习题</div>
+                        <p>本章节的练习题正在准备中...</p>
+                        <p>请先完成前面章节的学习，或在"代码实践"标签页中进行自由编程练习。</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 标签页切换
+        function switchTab(tabName) {
+            // 更新标签按钮状态
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // 更新标签内容显示
+            document.querySelectorAll('.lesson-content, .code-playground').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            if (tabName === 'lesson') {
+                document.getElementById('lesson-tab').classList.add('active');
+            } else if (tabName === 'practice') {
+                document.getElementById('practice-tab').classList.add('active');
+            } else if (tabName === 'exercise') {
+                document.getElementById('exercise-tab').classList.add('active');
+            }
+        }
+
+        // 运行代码
+        function runCode() {
+            const code = document.getElementById('code-input').value;
+            const outputElement = document.getElementById('output-content');
+            
+            // 模拟代码执行（实际应用中需要后端API）
+            try {
+                // 这里应该调用后端API执行Python代码
+                // 为演示目的，我们模拟一些输出
+                if (code.includes('print')) {
+                    let output = '';
+                    const lines = code.split('\n');
+                    lines.forEach(line => {
+                        if (line.trim().startsWith('print(')) {
+                            const content = line.match(/print\((.*)\)/)?.[1];
+                            if (content) {
+                                // 简单的print模拟
+                                output += eval(content) + '\n';
+                            }
+                        }
+                    });
+                    outputElement.textContent = output || '代码执行完成';
+                } else {
+                    outputElement.textContent = '代码执行完成，没有输出内容';
+                }
+            } catch (error) {
+                outputElement.textContent = `错误：${error.message}`;
+            }
+        }
+
+        // 提交代码
+        function submitCode() {
+            const code = document.getElementById('code-input').value;
+            if (!code.trim()) {
+                alert('请先输入代码！');
+                return;
+            }
+
+            // 模拟AI评估
+            setTimeout(() => {
+                alert('🎉 代码提交成功！\n\nAI评估结果：\n✅ 语法正确\n✅ 逻辑清晰\n💡 建议：可以添加更多注释');
+                
+                // 更新进度
+                if (currentChapter) {
+                    userProgress[currentChapter] = (userProgress[currentChapter] || 0) + 20;
+                    saveProgress();
+                }
+            }, 1000);
+        }
+
+        // 获取提示
+        function getHint() {
+            const hints = [
+                "💡 记住要使用正确的Python语法",
+                "💡 不要忘记添加适当的注释",
+                "💡 使用有意义的变量名",
+                "💡 考虑添加错误处理",
+                "💡 测试你的代码与不同的输入"
+            ];
+            
+            const randomHint = hints[Math.floor(Math.random() * hints.length)];
+            alert(randomHint);
+        }
+
+        // 加载示例代码
+        function loadExample() {
+            const examples = [
+                `# Hello World 示例
+print("Hello, Python!")
+print("欢迎来到编程世界！")
+
+name = "Python学习者"
+print(f"你好，{name}！")`,
+                
+                `# 变量和数据类型示例
+# 不同类型的变量
+age = 25
+height = 175.5
+name = "张三"
+is_student = True
+
+# 输出变量信息
+print(f"姓名：{name}")
+print(f"年龄：{age}")
+print(f"身高：{height}cm")
+print(f"学生身份：{is_student}")`,
+
+                `# 简单计算器示例
+num1 = 10
+num2 = 3
+
+print(f"{num1} + {num2} = {num1 + num2}")
+print(f"{num1} - {num2} = {num1 - num2}")
+print(f"{num1} * {num2} = {num1 * num2}")
+print(f"{num1} / {num2} = {num1 / num2:.2f}")`
+            ];
+            
+            const randomExample = examples[Math.floor(Math.random() * examples.length)];
+            document.getElementById('code-input').value = randomExample;
+        }
+
+        // 清空输出
+        function clearOutput() {
+            document.getElementById('output-content').textContent = '输出已清空...';
+        }
+
+        // 保存学习进度
+        function saveProgress() {
+            localStorage.setItem('pythonCourseProgress', JSON.stringify(userProgress));
+            updateProgressBar();
+            alert('💾 学习进度已保存！');
+        }
+
+        // 更新进度条
+        function updateProgressBar() {
+            const totalChapters = courseData.chapters.length;
+            const completedChapters = Object.keys(userProgress).length;
+            const progressPercentage = (completedChapters / totalChapters) * 100;
+            
+            document.getElementById('course-progress').style.width = `${progressPercentage}%`;
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+</body>
+</html> 

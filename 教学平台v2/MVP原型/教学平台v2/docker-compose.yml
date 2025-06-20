@@ -1,0 +1,54 @@
+
+version: '3.8'
+
+services:
+  jupyterhub:
+    build:
+      context: ./jupyterhub
+      dockerfile: Dockerfile
+    container_name: python-edu-hub
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./jupyterhub/config:/srv/jupyterhub/config
+      - ./data/hub:/data
+      - ./content:/srv/content
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - POSTGRES_PASSWORD=educationhub123
+    depends_on:
+      - postgres
+    networks:
+      - python-edu-network
+
+  postgres:
+    image: postgres:14-alpine
+    container_name: python-edu-db
+    environment:
+      - POSTGRES_DB=jupyterhub
+      - POSTGRES_USER=jupyterhub
+      - POSTGRES_PASSWORD=educationhub123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - python-edu-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: python-edu-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./static:/usr/share/nginx/html/static
+    depends_on:
+      - jupyterhub
+    networks:
+      - python-edu-network
+
+volumes:
+  postgres_data:
+
+networks:
+  python-edu-network:
+    driver: bridge

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python智能体开发教学平台 v2.0 - 演示</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; background: #f5f7fa; }
+        .header { background: #2563eb; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        .card { background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 1.5rem; }
+        .card-header { padding: 1rem 1.5rem; border-bottom: 1px solid #e5e7eb; font-weight: 600; }
+        .card-content { padding: 1.5rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+        .status-good { background: #dcfce7; border: 1px solid #16a34a; color: #15803d; padding: 0.5rem; border-radius: 4px; }
+        .status-info { background: #dbeafe; border: 1px solid #2563eb; color: #1d4ed8; padding: 0.5rem; border-radius: 4px; }
+        .code-block { background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 4px; padding: 1rem; font-family: monospace; }
+        .btn { padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer; font-weight: 500; }
+        .btn-primary { background: #2563eb; color: white; }
+        .btn-success { background: #16a34a; color: white; }
+        .progress { background: #e5e7eb; border-radius: 10px; height: 8px; overflow: hidden; }
+        .progress-bar { background: #2563eb; height: 100%; transition: width 0.3s; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🐍 Python智能体开发教学平台 v2.0</h1>
+        <div>
+            <span style="background: #1d4ed8; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.875rem;">演示模式</span>
+            <span style="margin-left: 1rem;">用户: admin</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 平台状态 -->
+        <div class="card">
+            <div class="card-header">📊 平台配置状态</div>
+            <div class="card-content">
+                <div class="grid">
+                    <div class="status-good">✅ 环境配置完成 - JupyterHub + nbgrader</div>
+                    <div class="status-good">✅ Docker配置生成 - 5个服务容器</div>
+                    <div class="status-good">✅ 演示内容创建 - Jupyter Notebook</div>
+                    <div class="status-info">ℹ️ 需要安装Docker来启动完整环境</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 生成的文件 -->
+        <div class="card">
+            <div class="card-header">📁 已生成的配置文件</div>
+            <div class="card-content">
+                <div class="grid">
+                    <div>
+                        <h4>核心配置:</h4>
+                        <ul>
+                            <li>✅ docker-compose.yml</li>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.2/lib/codemirror.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.2/lib/codemirror.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.2/mode/python/python.min.js"></script>
+    <style>
+        .notebook-cell {
+            border: 1px solid #e2e8f0;
+            margin: 8px 0;
+            border-radius: 8px;
+        }
+        .cell-header {
+            background: #f8fafc;
+            padding: 8px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 12px;
+            color: #64748b;
+        }
+        .cell-content {
+            padding: 16px;
+        }
+        .CodeMirror {
+            height: auto;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+        .grade-box {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 4px;
+            padding: 8px;
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 导航栏 -->
+    <nav class="bg-blue-600 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-xl font-bold">🐍 Python智能体开发教学平台 v2.0</h1>
+                    <span class="bg-blue-500 px-2 py-1 rounded text-sm">演示模式</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-blue-200">用户: admin</span>
+                    <button class="bg-blue-500 hover:bg-blue-700 px-3 py-1 rounded">设置</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- 欢迎信息 -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">📚 欢迎来到Python智能体开发教学平台</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <h3 class="font-semibold text-green-800 mb-2">✅ 环境配置完成</h3>
+                    <p class="text-green-700 text-sm">JupyterHub + nbgrader + Docker</p>
+                </div>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h3 class="font-semibold text-blue-800 mb-2">📖 课程内容就绪</h3>
+                    <p class="text-blue-700 text-sm">第一册-Python基础与核心技术(18章)</p>
+                </div>
+                <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                    <h3 class="font-semibold text-purple-800 mb-2">🎯 自动评分系统</h3>
+                    <p class="text-purple-700 text-sm">支持即时反馈和进度跟踪</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 课程导航 -->
+        <div class="grid md:grid-cols-4 gap-6 mb-8">
+            <!-- 侧边栏 -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="font-bold text-gray-800 mb-4">📋 课程目录</h3>
+                <div class="space-y-2">
+                    <div class="bg-blue-100 border-l-4 border-blue-500 p-2 text-sm">
+                        <div class="font-semibold">第1章 Python环境搭建</div>
+                        <div class="text-gray-600">基础语法</div>
+                    </div>
+                    <div class="bg-gray-100 border-l-4 border-gray-300 p-2 text-sm">
+                        <div class="font-semibold">第2章 变量与数据类型</div>
+                        <div class="text-gray-600">运算符</div>
+                    </div>
+                    <div class="bg-gray-100 border-l-4 border-gray-300 p-2 text-sm">
+                        <div class="font-semibold">第3章 控制结构</div>
+                        <div class="text-gray-600">函数定义</div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <span class="text-gray-500 text-sm">...更多章节</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 主内容区 -->
+            <div class="md:col-span-3">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-gray-800">第1章: Python基础教程演示</h2>
+                        <div class="flex space-x-2">
+                            <button class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
+                                ▶️ 运行全部
+                            </button>
+                            <button class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">
+                                💾 保存
+                            </button>
+                            <button class="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded text-sm">
+                                📤 提交作业
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Notebook 单元格 -->
+                    
+                    <!-- Markdown 单元格 -->
+                    <div class="notebook-cell">
+                        <div class="cell-header">📝 Markdown</div>
+                        <div class="cell-content">
+                            <div class="prose max-w-none">
+                                <h1>Python基础教程演示</h1>
+                                <p>这是一个基于nbgrader的Python教学演示。</p>
+                                <h2>学习目标</h2>
+                                <ul>
+                                    <li>理解变量的使用</li>
+                                    <li>掌握基本的数据类型</li>
+                                    <li>学会使用print函数</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 练习说明 -->
+                    <div class="notebook-cell">
+                        <div class="cell-header">📝 Markdown</div>
+                        <div class="cell-content">
+                            <div class="prose max-w-none">
+                                <h2>练习1: 变量定义</h2>
+                                <p>请定义一个变量<code>name</code>，并赋值为你的姓名：</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 代码单元格 -->
+                    <div class="notebook-cell">
+                        <div class="cell-header">
+                            🐍 Code (可编辑)
+                            <span class="grade-box inline-block ml-2">
+                                <span class="text-blue-600 font-semibold">💯 自动评分</span>
+                            </span>
+                        </div>
+                        <div class="cell-content">
+                            <textarea id="code-input" class="w-full">
+# 请在这里定义变量name
+# YOUR CODE HERE
+name = "请输入你的姓名"</textarea>
+                        </div>
+                    </div>
+
+                    <!-- 测试单元格 -->
+                    <div class="notebook-cell">
+                        <div class="cell-header">
+                            🧪 Test (自动运行)
+                            <span class="grade-box inline-block ml-2">
+                                <span class="text-green-600 font-semibold">✅ 5分</span>
+                            </span>
+                        </div>
+                        <div class="cell-content">
+                            <div class="bg-gray-100 p-4 rounded font-mono text-sm">
+                                <div class="text-gray-600"># 测试用例</div>
+                                <div>assert isinstance(name, str), "name应该是字符串类型"</div>
+                                <div>assert len(name) > 0, "name不能为空"</div>
+                                <div>print(f"✓ 测试通过! 你好，{name}！")</div>
+                            </div>
+                            <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded">
+                                <div class="text-green-800 font-semibold">输出:</div>
+                                <div class="text-green-700 font-mono">✓ 测试通过! 你好，请输入你的姓名！</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 功能演示区 -->
+                    <div class="mt-8 border-t pt-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">🎯 平台特色功能演示</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-blue-800 mb-2">📊 学习进度跟踪</h4>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between text-sm">
+                                        <span>第1章完成度</span>
+                                        <span class="font-semibold">85%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-blue-600 h-2 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                    <div class="text-xs text-gray-600">练习: 12/15 完成</div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-green-800 mb-2">⚡ 即时反馈系统</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex items-center">
+                                        <span class="text-green-600 mr-2">✅</span>
+                                        <span>语法正确</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-green-600 mr-2">✅</span>
+                                        <span>测试用例通过</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-orange-500 mr-2">⚠️</span>
+                                        <span>建议使用更有意义的变量名</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 实际功能按钮 -->
+                    <div class="mt-6 flex space-x-4">
+                        <button onclick="runCode()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                            ▶️ 运行代码
+                        </button>
+                        <button onclick="showDockerInfo()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                            🐳 查看Docker配置
+                        </button>
+                        <button onclick="showArchitecture()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">
+                            🏗️ 系统架构
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 系统信息 -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">🔧 系统配置信息</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">已生成的配置文件:</h4>
+                    <ul class="text-sm space-y-1 text-gray-600">
+                        <li>✅ docker-compose.yml - Docker编排配置</li>
+                        <li>✅ jupyterhub_config.py - JupyterHub配置</li>
+                        <li>✅ default.conf - Nginx反向代理配置</li>
+                        <li>✅ requirements.txt - Python依赖包</li>
+                        <li>✅ python-basics-demo.ipynb - 演示内容</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">技术栈:</h4>
+                    <ul class="text-sm space-y-1 text-gray-600">
+                        <li>🐍 JupyterHub 4.0.2 - 多用户管理</li>
+                        <li>📝 nbgrader 0.9.1 - 自动评分系统</li>
+                        <li>🐳 Docker Compose - 容器编排</li>
+                        <li>🗄️ PostgreSQL 14 - 数据库</li>
+                        <li>⚡ Nginx - 反向代理</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 -->
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50" onclick="closeModal()">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-96 overflow-y-auto" onclick="event.stopPropagation()">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 id="modal-title" class="text-lg font-bold"></h3>
+                        <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">&times;</button>
+                    </div>
+                    <div id="modal-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化代码编辑器
+        var editor = CodeMirror.fromTextArea(document.getElementById('code-input'), {
+            mode: 'python',
+            theme: 'default',
+            lineNumbers: true,
+            indentUnit: 4,
+            matchBrackets: true,
+            autoCloseBrackets: true,
+            lineWrapping: true
+        });
+
+        function runCode() {
+            const code = editor.getValue();
+            alert('代码运行演示:\n\n' + code + '\n\n实际环境中会执行Python代码并显示结果。');
+        }
+
+        function showDockerInfo() {
+            document.getElementById('modal-title').textContent = '🐳 Docker配置信息';
+            document.getElementById('modal-content').innerHTML = `
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-semibold mb-2">生成的配置文件:</h4>
+                        <ul class="text-sm space-y-1 list-disc list-inside">
+                            <li>docker-compose.yml - 定义JupyterHub, PostgreSQL, Nginx等服务</li>
+                            <li>Dockerfile - 自定义JupyterHub镜像</li>
+                            <li>requirements.txt - Python依赖包列表</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-2">安装Docker后的启动命令:</h4>
+                        <div class="bg-gray-100 p-3 rounded font-mono text-sm">
+                            python 启动脚本.py setup<br>
+                            python 启动脚本.py start
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-2">服务访问地址:</h4>
+                        <ul class="text-sm space-y-1">
+                            <li>🌐 JupyterHub: http://localhost:8000</li>
+                            <li>👤 用户名: admin 或 teacher</li>
+                            <li>🔑 密码: python123</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function showArchitecture() {
+            document.getElementById('modal-title').textContent = '🏗️ 系统架构';
+            document.getElementById('modal-content').innerHTML = `
+                <div class="space-y-4">
+                    <div class="text-center">
+                        <svg viewBox="0 0 800 600" class="w-full h-64 border rounded">
+                            <!-- 用户层 -->
+                            <rect x="50" y="50" width="700" height="80" fill="#e3f2fd" stroke="#1976d2" stroke-width="2" rx="10"/>
+                            <text x="400" y="90" text-anchor="middle" class="font-bold">用户层 (Students & Teachers)</text>
+                            
+                            <!-- 前端层 -->
+                            <rect x="50" y="150" width="340" height="100" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2" rx="10"/>
+                            <text x="220" y="190" text-anchor="middle" class="font-bold">JupyterLab Frontend</text>
+                            <text x="220" y="210" text-anchor="middle" class="text-sm">+ nbgrader扩展</text>
+                            
+                            <rect x="410" y="150" width="340" height="100" fill="#e8f5e8" stroke="#388e3c" stroke-width="2" rx="10"/>
+                            <text x="580" y="190" text-anchor="middle" class="font-bold">Nginx反向代理</text>
+                            <text x="580" y="210" text-anchor="middle" class="text-sm">静态资源 + 负载均衡</text>
+                            
+                            <!-- 服务层 -->
+                            <rect x="50" y="270" width="220" height="100" fill="#fff3e0" stroke="#f57c00" stroke-width="2" rx="10"/>
+                            <text x="160" y="310" text-anchor="middle" class="font-bold">JupyterHub</text>
+                            <text x="160" y="330" text-anchor="middle" class="text-sm">用户管理</text>
+                            
+                            <rect x="290" y="270" width="220" height="100" fill="#fce4ec" stroke="#c2185b" stroke-width="2" rx="10"/>
+                            <text x="400" y="310" text-anchor="middle" class="font-bold">nbgrader</text>
+                            <text x="400" y="330" text-anchor="middle" class="text-sm">自动评分</text>
+                            
+                            <rect x="530" y="270" width="220" height="100" fill="#e1f5fe" stroke="#0277bd" stroke-width="2" rx="10"/>
+                            <text x="640" y="310" text-anchor="middle" class="font-bold">DockerSpawner</text>
+                            <text x="640" y="330" text-anchor="middle" class="text-sm">容器管理</text>
+                            
+                            <!-- 数据层 -->
+                            <rect x="50" y="390" width="220" height="100" fill="#e8f5e8" stroke="#2e7d32" stroke-width="2" rx="10"/>
+                            <text x="160" y="430" text-anchor="middle" class="font-bold">PostgreSQL</text>
+                            <text x="160" y="450" text-anchor="middle" class="text-sm">用户数据</text>
+                            
+                            <rect x="290" y="390" width="220" height="100" fill="#ffebee" stroke="#d32f2f" stroke-width="2" rx="10"/>
+                            <text x="400" y="430" text-anchor="middle" class="font-bold">Redis缓存</text>
+                            <text x="400" y="450" text-anchor="middle" class="text-sm">会话存储</text>
+                            
+                            <rect x="530" y="390" width="220" height="100" fill="#f3e5f5" stroke="#512da8" stroke-width="2" rx="10"/>
+                            <text x="640" y="430" text-anchor="middle" class="font-bold">文件存储</text>
+                            <text x="640" y="450" text-anchor="middle" class="text-sm">课程内容</text>
+                            
+                            <!-- 连接线 -->
+                            <path d="M400 130 L400 150" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+                            <path d="M220 250 L160 270" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+                            <path d="M580 250 L640 270" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+                            <path d="M160 370 L160 390" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+                            <path d="M400 370 L400 390" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+                            <path d="M640 370 L640 390" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+                            
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+                                </marker>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-2">架构特点:</h4>
+                        <ul class="text-sm space-y-1 list-disc list-inside">
+                            <li>微服务架构，各组件职责清晰</li>
+                            <li>容器化部署，环境一致性好</li>
+                            <li>支持水平扩展，可承载大量用户</li>
+                            <li>数据持久化，确保学习记录安全</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html> 

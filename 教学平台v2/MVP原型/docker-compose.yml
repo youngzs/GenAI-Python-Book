@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  # JupyterHub - 多用户管理和认证
+  jupyterhub:
+    build:
+      context: ./jupyterhub
+      dockerfile: Dockerfile
+    container_name: python-edu-hub
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./jupyterhub/config:/srv/jupyterhub/config
+      - ./data/hub:/data
+      - ./content:/srv/content  # 课程内容
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-educationhub123}
+      - JUPYTER_IMAGE=python-edu-notebook
+    depends_on:
+      - postgres
+    networks:
+      - edunet
+
+  # PostgreSQL - 数据库
+  postgres:
+    image: postgres:14-alpine
+    container_name: python-edu-db
+    environment:
+      - POSTGRES_DB=jupyterhub
+      - POSTGRES_USER=jupyterhub
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-educationhub123}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - edunet
+
+  # Nginx - 反向代理和静态资源
+  nginx:
+    image: nginx:alpine
+    container_name: python-edu-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./static:/usr/share/nginx/html/static
+    depends_on:
+      - jupyterhub
+    networks:
+      - edunet
+
+  # Redis - 缓存和会话存储
+  redis:
+    image: redis:7-alpine
+    container_name: python-edu-cache
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - edunet
+
+  # 内容管理服务 - 处理Markdown转换
+  content-manager:
+    build:
+      context: ./content-manager
+      dockerfile: Dockerfile
+    container_name: python-edu-content
+    volumes:
+      - ./第一册-Python基础与核心技术:/app/source
+      - ./content:/app/output
+    environment:
+      - SOURCE_DIR=/app/source
+      - OUTPUT_DIR=/app/output
+    networks:
+      - edunet
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  edunet:
+    driver: bridge 
